@@ -2,37 +2,30 @@ package com.takkand.demo;
 
 import com.takkand.demo.domain.Field;
 import com.takkand.demo.repo.FieldRepository;
-import com.takkand.demo.service.FieldService;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootTest
-public class FieldServiceTest {
+public class FieldRepositoryTest {
 
     @Autowired
-    private FieldService fieldService;
-
-    @Mock
     private FieldRepository fieldRepository;
 
     @Test
-    @DisplayName("Test findById Success")
     void testFindById() {
-        // Setup mock repository
         Field field = new Field();
         field.setName("Salym");
-        Mockito.when(fieldRepository.findAll()).thenReturn(List.of(field));
+        fieldRepository.save(field);
+        Optional<Field> returnField = fieldRepository.findById(1L);
+        List<Field> fieldList = fieldRepository.findAll();
 
-        List<Field> fields = fieldService.findAll();
-        Assertions.assertEquals(fields.size(), 2, "Field was not found");
-
-
+        Assertions.assertTrue(returnField.isPresent());
+        Assertions.assertEquals(returnField.get().getName(), "Salym");
+        Assertions.assertEquals(fieldList.size(), 1);
     }
 }
