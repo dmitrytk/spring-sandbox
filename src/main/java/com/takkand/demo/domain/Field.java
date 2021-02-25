@@ -23,6 +23,11 @@ public class Field {
         this.name = name;
     }
 
+    public Field(long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public Field update(Field otherField) {
         if (otherField.getName() != null) setName(otherField.getName());
         if (otherField.getType() != null) setType(otherField.getType());

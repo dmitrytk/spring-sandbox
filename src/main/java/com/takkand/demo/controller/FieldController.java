@@ -7,8 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,56 +23,35 @@ public class FieldController {
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<?> one(@PathVariable Long id) {
+    ResponseEntity<Field> one(@PathVariable Long id) {
         return fieldService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElseThrow(ResourceNotFoundException::new);
+                .map(field -> new ResponseEntity<>(field, HttpStatus.OK))
+                .orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
     @GetMapping
     ResponseEntity<List<Field>> all() {
-        return ResponseEntity.ok(fieldService.findAll());
+        return new ResponseEntity<>(fieldService.findAll(), HttpStatus.OK);
     }
 
     @PostMapping
     ResponseEntity<Field> create(@RequestBody Field newField) {
-        Field field = fieldService.save(newField);
-        try {
-            return ResponseEntity
-                    .created(new URI(API_URL + field.getId()))
-                    .body(fieldService.save(newField));
-        } catch (URISyntaxException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        return new ResponseEntity<>(fieldService.save(newField), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Field> update(@RequestBody Field newField, @PathVariable Long id) {
+    ResponseEntity<Field> update(@RequestBody Field newField, @PathVariable Long id) {
         Optional<Field> existingField = fieldService.findById(id);
         if (existingField.isEmpty()) {
-            throw new ResourceNotFoundException();
+            throw new ResourceNotFoundException(id);
         }
         Field field = existingField.get().update(newField);
-        Field updatedField = fieldService.save(field);
-
-        try {
-            return ResponseEntity
-                    .ok()
-                    .location(new URI(API_URL + updatedField.getId()))
-                    .body(updatedField);
-        } catch (URISyntaxException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        return new ResponseEntity<>(fieldService.save(field), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity delete(@PathVariable Long id) {
-        return fieldService.findById(id)
-                .map(field -> {
-                    fieldService.deleteById(id);
-                    return ResponseEntity.noContent().build();
-                })
-                .orElseThrow(ResourceNotFoundException::new);
-
+    ResponseEntity<?> delete(@PathVariable Long id) {
+        fieldService.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
