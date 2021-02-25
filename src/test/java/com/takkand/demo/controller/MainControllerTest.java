@@ -1,7 +1,5 @@
-package com.takkand.demo;
+package com.takkand.demo.controller;
 
-import com.takkand.demo.domain.Field;
-import com.takkand.demo.service.FieldService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -16,20 +14,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class FieldControllerTest {
-
-    @Autowired
-    private FieldService fieldService;
+public class MainControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Test
     public void shouldReturnDefaultMessage() throws Exception {
-        Field field = new Field("Salym");
-        fieldService.save(field);
-
-        this.mockMvc.perform(get("/api/fields")).andDo(print()).andExpect(status().isOk())
-                .andExpect(content().string(containsString("Salym")));
+        this.mockMvc.perform(get("/")).andDo(print()).andExpect(status().isOk())
+                .andExpect(content().string(containsString("Hello world")));
     }
 }

@@ -22,4 +22,11 @@ public class Field {
     public Field(String name) {
         this.name = name;
     }
+
+    public Field update(Field otherField) {
+        if (otherField.getName() != null) setName(otherField.getName());
+        if (otherField.getType() != null) setType(otherField.getType());
+        if (otherField.getLocation() != null) setLocation(otherField.getLocation());
+        return this;
+    }
 }
