@@ -1,10 +1,12 @@
 package com.takkand.demo.domain;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Data
+@NoArgsConstructor
 @Entity
 public class Field {
 
@@ -14,4 +16,10 @@ public class Field {
 
     @Column(unique = true)
     private String name;
+    private String type;
+    private String location;
+
+    public Field(String name) {
+        this.name = name;
+    }
 }

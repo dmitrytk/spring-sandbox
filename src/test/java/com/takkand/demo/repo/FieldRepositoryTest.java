@@ -1,7 +1,6 @@
-package com.takkand.demo;
+package com.takkand.demo.repo;
 
 import com.takkand.demo.domain.Field;
-import com.takkand.demo.repo.FieldRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +16,24 @@ public class FieldRepositoryTest {
     private FieldRepository fieldRepository;
 
     @Test
-    void testFindById() {
+    void testRepo() {
+        // Create field
         Field field = new Field();
         field.setName("Salym");
         fieldRepository.save(field);
-        Optional<Field> returnField = fieldRepository.findById(1L);
-        List<Field> fieldList = fieldRepository.findAll();
 
+        // Get by id
+        Optional<Field> returnField = fieldRepository.findById(1L);
         Assertions.assertTrue(returnField.isPresent());
         Assertions.assertEquals(returnField.get().getName(), "Salym");
+
+        // Get all
+        List<Field> fieldList = fieldRepository.findAll();
         Assertions.assertEquals(fieldList.size(), 1);
+
+        // Delete by id
+        fieldRepository.deleteById(1L);
+        Assertions.assertEquals(fieldRepository.findAll().size(), 0);
+
     }
 }
